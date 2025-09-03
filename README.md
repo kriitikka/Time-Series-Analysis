@@ -36,7 +36,3 @@ Python:  pandas, numpy, matplotlib, seaborn, statsmodels, scipy
 ### 6. FFT Spectrum
 - Compute **Fast Fourier Transform (FFT)** of sales data.
 - Plot frequency spectrum to analyze periodicities.
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/<your-username>/<repo-name>.git
