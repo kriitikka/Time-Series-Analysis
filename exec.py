@@ -22,3 +22,7 @@ print("FFT Spectrum:", fft_results['spectrum'][:5])
 
 # 6. Plot
 plot_sales(df)
+plot_regression(df, degree=2)
+plot_arima_forecast(df, steps=5)
+plot_holt_forecast(df, steps=5)
+plot_fft_spectrum(df)
