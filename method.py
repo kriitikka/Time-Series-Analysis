@@ -80,3 +80,76 @@ def plot_sales(df):
     plt.grid(True)
     plt.show()
 
+def plot_regression(df, degree=1):
+    from sklearn.linear_model import LinearRegression
+    from sklearn.preprocessing import PolynomialFeatures
+    X = df['year'].values.reshape(-1, 1)
+    y = df['sales'].values
+
+    poly = PolynomialFeatures(degree=degree)
+    X_poly = poly.fit_transform(X)
+    model = LinearRegression().fit(X_poly, y)
+    y_pred = model.predict(X_poly)
+    
+    plt.scatter(df['year'], df['sales'], label="Actual")
+    plt.plot(df['year'], y_pred, color="red", label="Regression Fit")
+    plt.title("Regression Analysis")
+    plt.xlabel("Year")
+    plt.ylabel("Sales")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+
+last_year = df['year'].iloc[-1]
+
+steps = 5   # forecast for 5 years
+future_years = np.arange(last_year + 1, last_year + 1 + steps)
+
+
+def plot_arima_forecast(df, steps=5):
+    from statsmodels.tsa.arima.model import ARIMA
+    model = ARIMA(df['sales'], order=(1,1,1))
+    model_fit = model.fit()
+    forecast_res = model_fit.get_forecast(steps=steps)
+    forecast = forecast_res.predicted_mean
+    conf_int = forecast_res.conf_int()
+    lower = conf_int.iloc[:,0]
+    upper = conf_int.iloc[:,1]
+    
+    plt.plot(df['year'], df['sales'], label="History")
+    plt.plot(future_years, forecast, 'r--', label="ARIMA Forecast")
+    plt.fill_between(future_years, lower, upper, color='pink', alpha=0.3)  # CI
+    plt.title("ARIMA Forecast")
+    plt.xlabel("Year")
+    plt.ylabel("Sales")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+def plot_holt_forecast(df, steps=5):
+    from statsmodels.tsa.holtwinters import ExponentialSmoothing
+    
+    model = ExponentialSmoothing(df['sales'], trend="add")
+    model_fit = model.fit()
+    forecast = model_fit.forecast(steps=steps)
+    
+    plt.bar(future_years, forecast, color='green', alpha=0.5, label="Holt Forecast")
+    plt.title("Holt’s Linear Forecast")
+    plt.xlabel("Year")
+    plt.ylabel("Sales")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+def plot_fft_spectrum(df):
+    sales = df['sales'].values
+    fft_vals = np.fft.fft(sales)
+    fft_freq = np.fft.fftfreq(len(sales), d=1)
+
+    plt.bar(fft_freq, np.abs(fft_vals))
+    plt.title("FFT Spectrum of Sales")
+    plt.xlabel("Frequency")
+    plt.ylabel("Amplitude")
+    plt.grid(True)
+    plt.show()
